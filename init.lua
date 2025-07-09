@@ -48,7 +48,7 @@ end
 mq.bind("/parsemerchant", handle_merchant)
 mq.bind("/missingspells", handle_missing)
 
-mq.event("End Scribe", "You have finished scribing #1#.", function(_, spell)
+local function handle_learned(_, spell)
 	local spell_id = mq.TLO.Spell(spell).ID()
 	local to_remove = -1
 	for k, v in pairs(state.missing_cache) do
@@ -59,20 +59,10 @@ mq.event("End Scribe", "You have finished scribing #1#.", function(_, spell)
 	if to_remove ~= -1 then
 		table.remove(state.missing_cache, to_remove)
 	end
-end)
+end
 
-mq.event("Learned", "You have learned #1#!", function(_, spell)
-	local spell_id = mq.TLO.Spell(spell).ID()
-	local to_remove = -1
-	for k, v in pairs(state.missing_cache) do
-		if v.ID() == spell_id then
-			to_remove = k
-		end
-	end
-	if to_remove ~= -1 then
-		table.remove(state.missing_cache, to_remove)
-	end
-end)
+mq.event("End Scribe", "You have finished scribing #1#.", handle_learned)
+mq.event("Learned", "You have learned #1#!", handle_learned)
 
 function Main()
 	if mq.TLO.EverQuest.GameState() ~= "INGAME" then
