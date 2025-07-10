@@ -50,14 +50,23 @@ function MerchantUI:Render()
 				ImGui.SetItemTooltip("Zone ID: %d", v["zone_id"])
 
 				ImGui.TableNextColumn()
-				ImGui.PushID("##selectable" .. tostring(v["zone_id"]) .. v["merchant"] .. v["spell"])
-				if ImGui.Selectable(v["merchant"]) then
+				ImGui.Button(v["merchant"] .. "##" .. tostring(v["zone_id"] .. v["merchant"] .. v["spell"]))
+				if ImGui.BeginPopupContextItem() then
 					if mq.TLO.Zone.ID() ~= v["zone_id"] then
-						state.nav_zone = v["zone_id"]
+						if ImGui.Selectable("Nav to Zone") then
+							state.nav_zone = v["zone_id"]
+						end
+						if ImGui.Selectable("Nav to Zone and Spawn") then
+							state.nav_zone = v["zone_id"]
+							state.nav_spawn = v["merchant"]
+						end
+					else
+						if ImGui.Selectable("Nav to Spawn") then
+							state.nav_spawn = v["merchant"]
+						end
 					end
-					state.nav_spawn = v["merchant"]
+					ImGui.EndPopup()
 				end
-				ImGui.PopID()
 			end
 			ImGui.EndTable()
 		end
