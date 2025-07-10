@@ -55,7 +55,7 @@ function MerchantUI:Render()
 						.. "##"
 						.. tostring(v["zone_id"] .. v["merchant"] .. v["spell"] .. tostring(v["item_id"]))
 				)
-				if ImGui.BeginPopupContextItem() then
+				if state.have_nav and ImGui.BeginPopupContextItem() then
 					if mq.TLO.Zone.ID() ~= v["zone_id"] then
 						if ImGui.Selectable("Nav to Zone") then
 							state.nav_zone = v["zone_id"]
