@@ -7,6 +7,7 @@ local state = {
 	max_level = 125,
 	show_missing = false,
 	draw_missing = true,
+	clear_cache = false,
 	show_merchant = false,
 	draw_merchant = false,
 	refresh = false,

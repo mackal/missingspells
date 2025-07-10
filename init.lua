@@ -12,6 +12,7 @@ local MAX_LEVEL = 125
 
 local function handle_missing()
 	state.show_missing = not state.show_missing
+	state.clear_cache = true
 end
 
 local function handle_merchant()

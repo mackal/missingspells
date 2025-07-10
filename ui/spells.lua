@@ -24,6 +24,10 @@ end
 
 function MissingUI:Render()
 	state.show_missing, state.draw_missing = ImGui.Begin("Missing Spells", state.show_missing)
+	if state.clear_cache then
+		count_cache = {}
+		state.clear_cache = false
+	end
 	if state.draw_missing then
 		ImGui.PushItemWidth(100)
 		state.min_level = ImGui.InputInt("Min Level", state.min_level)
