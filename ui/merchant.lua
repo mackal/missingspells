@@ -18,10 +18,6 @@ function MerchantUI:Render()
 
 	state.show_merchant, state.draw_merchant = ImGui.Begin("Merchant Spells", state.show_merchant)
 	if state.draw_merchant then
-		if ImGui.Button("End Sample 1") then
-			state.running = false
-		end
-
 		local entries = GetMerchantEntries(state.spell_search_id)
 
 		if entries and #entries then
