@@ -16,6 +16,8 @@ function MerchantUI:Render()
 		return
 	end
 
+	ImGui.SetNextWindowSize(ImVec2(600, 450), ImGuiCond.FirstUseEver)
+
 	state.show_merchant, state.draw_merchant = ImGui.Begin("Merchant Spells", state.show_merchant)
 	if state.draw_merchant then
 		local entries = GetMerchantEntries(state.spell_search_id)

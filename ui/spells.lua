@@ -23,6 +23,7 @@ local function get_merchant_count(spell_id)
 end
 
 function MissingUI:Render()
+	ImGui.SetNextWindowSize(ImVec2(600, 450), ImGuiCond.FirstUseEver)
 	state.show_missing, state.draw_missing = ImGui.Begin("Missing Spells", state.show_missing)
 	if state.clear_cache then
 		count_cache = {}
@@ -93,8 +94,13 @@ function MissingUI:Render()
 					ImGui.TableNextColumn()
 					local name = GetSpellItemName(v.ID())
 					if name == "" then
-						ImGui.Text("")
-					else
+						-- try to find the item based on spell name
+						local item = mq.TLO.FindItem(v.Name())
+						if item() and item.Spell.ID() == v.ID() then
+							name = item.Name()
+						end
+					end
+					if name ~= "" then
 						local item = mq.TLO.FindItem(name)
 						if item() then
 							ImGui.PushID("##scribe" .. name)
@@ -107,6 +113,8 @@ function MissingUI:Render()
 							ImGui.Text("Missing")
 							ImGui.PopStyleColor()
 						end
+					else
+						ImGui.Text("")
 					end
 				end
 			end
