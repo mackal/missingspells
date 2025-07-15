@@ -156,13 +156,16 @@ end
 function GetSpellItemName(spell_id)
 	local db = sql.open(state.db_path)
 
-	if not db then
-		return ""
-	end
+	local name = ""
 
-	for name in db:urows("SELECT item FROM spells WHERE spell_id = " .. tostring(spell_id) .. " LIMIT 1") do
+	if not db then
 		return name
 	end
 
-	return ""
+	for v in db:urows("SELECT item FROM spells WHERE spell_id = " .. tostring(spell_id) .. " LIMIT 1") do
+		name = v
+	end
+
+	db:close()
+	return name
 end
