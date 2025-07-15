@@ -84,6 +84,7 @@ function GetMerchantCount(spell_id)
 
 	local ret = 0
 
+	db:busy_timeout(5000)
 	for v in db:rows(string.format("SELECT COUNT(spell_id) FROM spells WHERE spell_id = %d", spell_id)) do
 		ret = v[1]
 	end
@@ -102,6 +103,7 @@ function SaveMerchantItems(items)
 		return
 	end
 
+	db:busy_timeout(5000)
 	local stmt = db:prepare([[
     INSERT INTO spells(spell, spell_id, item, item_id, item_icon, zone_id, merchant, price)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -137,6 +139,7 @@ function GetMerchantEntries(spell_id)
 
 	local entries = {}
 
+	db:busy_timeout(5000)
 	for res in
 		db:nrows(
 			"SELECT spell, spell_id, item, item_id, item_icon, zone_id, merchant, price FROM spells WHERE spell_id = "
@@ -162,6 +165,7 @@ function GetSpellItemName(spell_id)
 		return name
 	end
 
+	db:busy_timeout(5000)
 	for v in db:urows("SELECT item FROM spells WHERE spell_id = " .. tostring(spell_id) .. " LIMIT 1") do
 		name = v
 	end
