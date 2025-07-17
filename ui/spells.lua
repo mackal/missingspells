@@ -22,6 +22,33 @@ local function get_merchant_count(spell_id)
 	return count_cache[spell_id]
 end
 
+local current_sort_specs = nil
+local function compare_sort(a, b)
+	local sort_spec = current_sort_specs:Specs(1)
+	local delta = 0
+	if sort_spec.ColumnIndex == 1 then
+		-- name sort
+		if a.Name() < b.Name() then
+			delta = -1
+		elseif b.Name() < a.Name() then
+			delta = 1
+		else
+			delta = 0
+		end
+	elseif sort_spec.ColumnIndex == 2 then
+		-- Level sort
+		delta = a.Level() - b.Level()
+	end
+
+	if delta ~= 0 then
+		if sort_spec.SortDirection == ImGuiSortDirection.Ascending then
+			return delta < 0
+		end
+		return delta > 0
+	end
+	return a.Level() - b.Level() > 0
+end
+
 function MissingUI:Render()
 	ImGui.SetNextWindowSize(ImVec2(600, 450), ImGuiCond.FirstUseEver)
 	state.show_missing, state.draw_missing = ImGui.Begin("Missing Spells", state.show_missing)
@@ -47,13 +74,33 @@ function MissingUI:Render()
 		end
 		if #state.missing_cache then
 			local spell_icon = mq.FindTextureAnimation("A_SpellGems")
-			ImGui.BeginTable("MissingSpells", 5, bit32.bor(ImGuiTableFlags.Resizable, ImGuiTableFlags.Borders))
-			ImGui.TableSetupColumn("Icon", ImGuiTableColumnFlags.WidthFixed, 25.0)
+			ImGui.BeginTable(
+				"MissingSpells",
+				5,
+				bit32.bor(ImGuiTableFlags.Resizable, ImGuiTableFlags.Borders, ImGuiTableFlags.Sortable)
+			)
+			ImGui.TableSetupColumn(
+				"Icon",
+				bit32.bor(ImGuiTableColumnFlags.NoSort, ImGuiTableColumnFlags.WidthFixed),
+				25.0
+			)
 			ImGui.TableSetupColumn("Name")
-			ImGui.TableSetupColumn("Level")
-			ImGui.TableSetupColumn("Merchants")
-			ImGui.TableSetupColumn("Scribe")
+			ImGui.TableSetupColumn("Level", ImGuiTableColumnFlags.DefaultSort)
+			ImGui.TableSetupColumn("Merchants", ImGuiTableColumnFlags.NoSort)
+			ImGui.TableSetupColumn("Scribe", ImGuiTableColumnFlags.NoSort)
 			ImGui.TableHeadersRow()
+
+			local sort_specs = ImGui.TableGetSortSpecs()
+			if sort_specs then
+				if sort_specs.SpecsDirty then
+					if #state.missing_cache > 1 then
+						current_sort_specs = sort_specs
+						table.sort(state.missing_cache, compare_sort)
+						current_sort_specs = nil
+					end
+					sort_specs.SpecsDirty = false
+				end
+			end
 
 			for _, v in pairs(state.missing_cache) do
 				local count = get_merchant_count(v.ID())
