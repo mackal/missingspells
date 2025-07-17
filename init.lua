@@ -64,6 +64,13 @@ end
 
 mq.event("End Scribe", "You have finished scribing #1#.", handle_learned)
 mq.event("Learned", "You have learned #1#!", handle_learned)
+mq.event("Level", "You have gained a level! Welcome to level #1#!", function(_, lvl)
+	-- well, we could handle multiple levels, but then it's hard to tell if they have it set manually, also unlikely so too bad!
+	local level = tonumber(lvl)
+	if state.max_level == level - 1 then
+		state.max_level = level
+	end
+end)
 
 function Main()
 	if mq.TLO.EverQuest.GameState() ~= "INGAME" then
