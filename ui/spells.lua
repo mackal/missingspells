@@ -152,7 +152,7 @@ function MissingUI:Render()
 						if item() then
 							ImGui.PushID("##scribe" .. name)
 							if ImGui.Button("Scribe") then
-								mq.cmdf('/itemnotify "%s" rightmouseup', name)
+								state.scribe_spell = name
 							end
 							ImGui.PopID()
 						else

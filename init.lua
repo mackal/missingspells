@@ -82,6 +82,23 @@ function Main()
 		state.refresh = false
 	end
 
+	if state.scribe_spell ~= "" then
+		local item = mq.TLO.FindItem(state.scribe_spell)
+		if item() then
+			if item.ItemSlot2() ~= -1 then
+				local pack = "pack" .. tostring(item.ItemSlot() - 22)
+				if mq.TLO.InvSlot(pack).Item.Open() == 0 then
+					mq.cmd("/itemnotify " .. pack .. " rightmouseup")
+					mq.delay(1000, function()
+						return mq.TLO.InvSlot(pack).Item.Open() == 1
+					end)
+				end
+			end
+			mq.cmdf('/itemnotify "%s" rightmouseup', state.scribe_spell)
+		end
+		state.scribe_spell = ""
+	end
+
 	---@diagnostic disable-next-line: undefined-field
 	if not mq.TLO.EasyFind.Active() and not mq.TLO.Navigation.Active() then
 		if state.nav_zone > 0 then

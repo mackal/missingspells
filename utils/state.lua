@@ -17,6 +17,7 @@ local state = {
 	nav_zone = 0,
 	nav_spawn = "",
 	buy_spell = "",
+	scribe_spell = "",
 	running = true,
 	---@type spell[]
 	missing_cache = {},
